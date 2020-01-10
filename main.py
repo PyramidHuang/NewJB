@@ -94,8 +94,7 @@ def shujushaixuan(dt):
         b.sld = sld
         h_m_s = str(td).split(":")
         b.td_s = int(h_m_s[0]) * 3600 + int(h_m_s[1]) * 60 + int(h_m_s[2])
-    # print(gd_dt)
-    dayingceshi(gd_dt)
+    # dayingceshi(gd_dt)
 
     # 选择高低数据的前两个数据的潮位比较大小,1>2时1为g,2为d,之后循环dg
     i = gd_dt[0].sl
@@ -113,8 +112,8 @@ def shujushaixuan(dt):
             else:
                 each.tag = "g"
     # 经过挑选数据得到整点数据dt和高低数据gd_dt
+    # dayingceshi(gd_dt)
     return dt, gd_dt
-    # print(gd_dt)
 
 
 def gdfenlei(dt_list, tag):
@@ -244,10 +243,17 @@ def shujushuchu(zd_dt, gd_dt, xls_file, area="请输入区域"):
             d_dt.append(each)
         else:
             pass
+    print("前***********************************************************************前")
+    dayingceshi(g_dt)
+    print("前############################################################################钱")
+    dayingceshi(d_dt)
+    # todo：算法更改
     gdfenlei(g_dt, "g")
     gdfenlei(d_dt, "d")
-    # dayingceshi(g_dt)
-    # dayingceshi(d_dt)
+    print("***********************************************************************")
+    dayingceshi(g_dt)
+    print("############################################################################")
+    dayingceshi(d_dt)
     for each in g_dt:
         date = each.date
         day = int(date.split("/")[2])

@@ -124,7 +124,8 @@ def gdfenlei(dt_list, tag):
     :return: 分类后的实例化对象列表
     """
     for each in dt_list:
-        if dt_list.index(each) < len(dt_list) - 1:
+        # 首行数据判断
+        if dt_list.index(each) == 0:
             date1 = each.date
             time1 = each.time
             d1 = int(date1.split("/")[2])
@@ -146,6 +147,45 @@ def gdfenlei(dt_list, tag):
                     each.tag = tag + "1"
                 else:
                     each.tag = tag + "2"
+
+        # 中间数据判断
+        elif 0 < dt_list.index(each) < len(dt_list) - 1:
+            date1 = each.date
+            time1 = each.time
+            d1 = int(date1.split("/")[2])
+            hour1 = int(time1.split(":")[0])
+
+            next_each = dt_list[dt_list.index(each) + 1]
+            date2 = next_each.date
+            time2 = next_each.time
+            d2 = int(date2.split("/")[2])
+            hour2 = int(time2.split(":")[0])
+            
+            before_each = dt_list[dt_list.index(each) - 1]
+            date0 = before_each.date
+            time0 = before_each.time
+            d0 = int(date0.split("/")[2])
+            hour0 = int(time0.split(":")[0])
+
+            if d1 == d2:
+                if hour1<hour2:
+                    each.tag = tag + "1"
+                else:
+                    each.tag = tag + "2"
+            
+            elif d1 == d0:
+                if hour1<hour0:
+                    each.tag = tag + "1"
+                else:
+                    each.tag = tag + "2"
+            
+            else:
+                if hour1<12:
+                    each.tag = tag + "1"
+                else:
+                    each.tag = tag + "2"
+
+        # 末行数据判断
         else:
             date1 = each.date
             time1 = each.time
@@ -168,7 +208,6 @@ def gdfenlei(dt_list, tag):
                     each.tag = tag + "1"
                 else:
                     each.tag = tag + "2"
-
 
 def dayingceshi(file):
     """
@@ -243,17 +282,17 @@ def shujushuchu(zd_dt, gd_dt, xls_file, area="请输入区域"):
             d_dt.append(each)
         else:
             pass
-    print("前***********************************************************************前")
-    dayingceshi(g_dt)
-    print("前############################################################################钱")
-    dayingceshi(d_dt)
-    # todo：算法更改
+    # print("前***********************************************************************前")
+    # dayingceshi(g_dt)
+    # print("前############################################################################前")
+    # dayingceshi(d_dt)
     gdfenlei(g_dt, "g")
     gdfenlei(d_dt, "d")
-    print("***********************************************************************")
-    dayingceshi(g_dt)
-    print("############################################################################")
-    dayingceshi(d_dt)
+    # print("后***********************************************************************后")
+    # dayingceshi(new_g_dt)
+    # print("后############################################################################后")
+    # dayingceshi(new_d_dt)
+    
     for each in g_dt:
         date = each.date
         day = int(date.split("/")[2])
@@ -356,7 +395,7 @@ def shujushuchu(zd_dt, gd_dt, xls_file, area="请输入区域"):
             plus += 1
     newWb.save(xls_file)
     # 保存至result路径
-
+    print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
     dayingceshi(gc_td_min)
 
 

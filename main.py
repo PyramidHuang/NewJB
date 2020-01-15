@@ -11,7 +11,6 @@ import os
 class Data:
     def __init__(self, date, time, sl, tag, id):
         """
-
         :param date: 日期
         :param time: 时间
         :param sl: 潮位
@@ -85,16 +84,17 @@ def shujushaixuan(dt):
             if m != "00" or a.time == b.time:
                 gd_dt.append(dt.pop(dt.index(each)))
 
-    for i in range(0, len(gd_dt) - 1):
-        a = gd_dt[i]
-        b = gd_dt[i + 1]
+    # 涨落潮潮时和潮差的计算
+    for i in range(1, len(gd_dt)):
+        a = gd_dt[i-1]
+        b = gd_dt[i]
         td = b.dateTime_p - a.dateTime_p
-        sld = b.sl - a.sl
+        sld = abs(b.sl - a.sl)
         b.td = td
         b.sld = sld
         h_m_s = str(td).split(":")
         b.td_s = int(h_m_s[0]) * 3600 + int(h_m_s[1]) * 60 + int(h_m_s[2])
-    # dayingceshi(gd_dt)
+    dayingceshi(gd_dt)
 
     # 选择高低数据的前两个数据的潮位比较大小,1>2时1为g,2为d,之后循环dg
     i = gd_dt[0].sl
@@ -160,7 +160,7 @@ def gdfenlei(dt_list, tag):
             time2 = next_each.time
             d2 = int(date2.split("/")[2])
             hour2 = int(time2.split(":")[0])
-            
+
             before_each = dt_list[dt_list.index(each) - 1]
             date0 = before_each.date
             time0 = before_each.time
@@ -168,19 +168,19 @@ def gdfenlei(dt_list, tag):
             hour0 = int(time0.split(":")[0])
 
             if d1 == d2:
-                if hour1<hour2:
+                if hour1 < hour2:
                     each.tag = tag + "1"
                 else:
                     each.tag = tag + "2"
-            
+
             elif d1 == d0:
-                if hour1<hour0:
+                if hour1 < hour0:
                     each.tag = tag + "1"
                 else:
                     each.tag = tag + "2"
-            
+
             else:
-                if hour1<12:
+                if hour1 < 12:
                     each.tag = tag + "1"
                 else:
                     each.tag = tag + "2"
@@ -208,6 +208,7 @@ def gdfenlei(dt_list, tag):
                     each.tag = tag + "1"
                 else:
                     each.tag = tag + "2"
+
 
 def dayingceshi(file):
     """
@@ -292,7 +293,7 @@ def shujushuchu(zd_dt, gd_dt, xls_file, area="请输入区域"):
     # dayingceshi(new_g_dt)
     # print("后############################################################################后")
     # dayingceshi(new_d_dt)
-    
+
     for each in g_dt:
         date = each.date
         day = int(date.split("/")[2])
@@ -331,12 +332,24 @@ def shujushuchu(zd_dt, gd_dt, xls_file, area="请输入区域"):
     g_dt_td = sorted(g_dt, key=lambda a: a.td_s)
     d_dt_td = sorted(d_dt, key=lambda a: a.td_s)
 
+# 删除第一个超市和超差=0的值
     if g_dt_td[0].td_s == 0:
         g_dt_td.pop(0)
     elif d_dt_td[0].td_s == 0:
         d_dt_td.pop(0)
     else:
         pass
+    if g_dt_sld[0].sld == 0:
+        g_dt_sld.pop(0)
+    elif d_dt_sld[0].sld == 0:
+        d_dt_sld.pop(0)
+    else:
+        pass
+    # print("nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
+    # dayingceshi(g_dt_sld)
+    # print("nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
+    # dayingceshi(d_dt_sld)
+
 
     # 高低潮特征值摘取
     gc_sl_max, gc_sl_min, gc_sl_ave = tongji(g_dt_tx, "sl")
@@ -349,6 +362,7 @@ def shujushuchu(zd_dt, gd_dt, xls_file, area="请输入区域"):
     # 涨落潮潮时特征值摘取
     gc_td_max, gc_td_min, gc_td_ave = tongji(g_dt_td, "td_s")
     dc_td_max, dc_td_min, dc_td_ave = tongji(d_dt_td, "td_s")
+
 
     # ***************统计值输出至表格*************** 开始
     newWs = newWb.get_sheet(1)
@@ -373,8 +387,8 @@ def shujushuchu(zd_dt, gd_dt, xls_file, area="请输入区域"):
         elif list1_tongji.index(i) == 2 or list1_tongji.index(i) == 3:
             for j in i:
                 tuple_str = shuchu_str(j)
-                # print(tuple_str)
-                newWs.write(0 + plus, 0, tuple_str[0])
+                # print(tuple_str)shuchu_str(str_sl, str_date, str_time, str_lunar, str_td, str_sld)
+                newWs.write(0 + plus, 0, tuple_str[5])
                 newWs.write(1 + plus, 0, tuple_str[1])
                 newWs.write(2 + plus, 0, tuple_str[3])
                 newWs.write(3 + plus, 0, tuple_str[3])

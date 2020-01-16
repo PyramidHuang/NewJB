@@ -86,7 +86,7 @@ def shujushaixuan(dt):
 
     # 涨落潮潮时和潮差的计算
     for i in range(1, len(gd_dt)):
-        a = gd_dt[i-1]
+        a = gd_dt[i - 1]
         b = gd_dt[i]
         td = b.dateTime_p - a.dateTime_p
         sld = abs(b.sl - a.sl)
@@ -332,7 +332,7 @@ def shujushuchu(zd_dt, gd_dt, xls_file, area="请输入区域"):
     g_dt_td = sorted(g_dt, key=lambda a: a.td_s)
     d_dt_td = sorted(d_dt, key=lambda a: a.td_s)
 
-# 删除第一个超市和超差=0的值
+    # 删除第一个超市和超差=0的值
     if g_dt_td[0].td_s == 0:
         g_dt_td.pop(0)
     elif d_dt_td[0].td_s == 0:
@@ -350,7 +350,6 @@ def shujushuchu(zd_dt, gd_dt, xls_file, area="请输入区域"):
     # print("nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
     # dayingceshi(d_dt_sld)
 
-
     # 高低潮特征值摘取
     gc_sl_max, gc_sl_min, gc_sl_ave = tongji(g_dt_tx, "sl")
     dc_sl_max, dc_sl_min, dc_sl_ave = tongji(d_dt_tx, "sl")
@@ -362,7 +361,6 @@ def shujushuchu(zd_dt, gd_dt, xls_file, area="请输入区域"):
     # 涨落潮潮时特征值摘取
     gc_td_max, gc_td_min, gc_td_ave = tongji(g_dt_td, "td_s")
     dc_td_max, dc_td_min, dc_td_ave = tongji(d_dt_td, "td_s")
-
 
     # ***************统计值输出至表格*************** 开始
     newWs = newWb.get_sheet(1)
@@ -499,13 +497,13 @@ def all_run():
         path_list = []
         for each in csv_list:
             if each.split(".")[1] == "csv":
-                path_list.append("test/" + each)
+                path_list.append(file_path+ "\\" + each)
         print(path_list)
         for each in path_list:
             dt = shujuluru(each)
             zd_dt, gd_dt = shujushaixuan(dt)
             xls_path = each.split(".")[0] + ".xls"
-            area = each.split(".")[0].split("/")[1]
+            area = each.split(".")[0].split("\\")[1]
             shujushuchu(zd_dt, gd_dt, xls_path, area=area)
     except OSError as reason:
         eg.msgbox("运行错误！", "警告！")
